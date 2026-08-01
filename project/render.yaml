@@ -1,0 +1,26 @@
+# Blueprint Render — LCAPP (front-end statique Vite)
+# Doc : https://render.com/docs/blueprint-spec
+#
+# Render héberge UNIQUEMENT le front-end statique.
+# Le back-end (base + Edge Functions) reste sur Supabase.
+#
+# À l'import du blueprint, Render demandera les 2 variables marquées
+# "sync: false" (elles ne sont pas stockées dans le repo).
+
+services:
+  - type: web
+    name: lcapp
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    # Toutes les routes renvoient index.html (SPA — évite les 404 si un
+    # routeur côté client est ajouté plus tard).
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false        # saisi dans le dashboard Render (non versionné)
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false        # saisi dans le dashboard Render (non versionné)
